@@ -16,12 +16,22 @@ export const GlobalContextProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState("");
   const [provider, setProvider] = useState("");
   const [contract, setContract] = useState("");
+  const [battleName, setBattleName] = useState("") ; 
   const [showAlert, setShowAlert] = useState({
     status: false,
     type: "info",
     message: "",
   });
   const navigate = useNavigate();
+
+  // set tha game datat ro the states
+  useEffect(()=> {
+    const fetchGameData = async ( ) => {
+      const fetchedBattles = await contract.getAllBattles() ; 
+        console.log(fetchedBattles) ;
+      }
+    if (contract) {fetchGameData()}
+  }, [contract])
 
   //* Set the wallet address to the state
   const updateCurrentWalletAddress = async () => {
@@ -82,6 +92,7 @@ export const GlobalContextProvider = ({ children }) => {
         walletAddress,
         showAlert,
         setShowAlert,
+        battleName, setBattleName
       }}
     >
       {children}
