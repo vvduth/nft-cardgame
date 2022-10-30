@@ -42,6 +42,7 @@ export const GlobalContextProvider = ({ children }) => {
 
       setProvider(newProvider);
       setContract(newContract);
+      console.log("newcontract ", newContract)
     };
 
     setSmartContractAndProvider();

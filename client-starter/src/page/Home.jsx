@@ -8,17 +8,17 @@ const Home = () => {
 
   const handleClick =async  () => {
     try {
-      console.log("conrtract " , contract.contract);
+      console.log("conrtract " , contract);
       const playerExist = await contract.isPlayer(walletAddress)  ; 
-      // if (!playerExist) {
-      //   await contract.registerPlayer(playerName, playerName) ;
-      //   setShowAlert({
-      //     status: true,
-      //     type: 'info', 
-      //     message: `${playerName} is being summoned!` 
+      if (!playerExist) {
+        await contract.registerPlayer(playerName, playerName) ;
+        setShowAlert({
+          status: true,
+          type: 'info', 
+          message: `${playerName} is being summoned!` 
 
-      //   })
-      // }
+        })
+      }
     } catch (e) {
       console.log(e) ;
     }
