@@ -16,22 +16,45 @@ export const GlobalContextProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState("");
   const [provider, setProvider] = useState("");
   const [contract, setContract] = useState("");
-  const [battleName, setBattleName] = useState("") ; 
+  const [battleName, setBattleName] = useState("");
   const [showAlert, setShowAlert] = useState({
     status: false,
     type: "info",
     message: "",
   });
+
+  const [updategameData, setUpdategameData] = useState(0) ; 
+  const [gameData, setGameData] = useState({
+    player: [], 
+    pendingBattles: [] ,
+    activeBattle: null
+    }) ; 
   const navigate = useNavigate();
 
   // set tha game datat ro the states
-  useEffect(()=> {
-    const fetchGameData = async ( ) => {
-      const fetchedBattles = await contract.getAllBattles() ; 
-        console.log(fetchedBattles) ;
-      }
-    if (contract) {fetchGameData()}
-  }, [contract])
+  useEffect(() => {
+    const fetchGameData = async () => {
+      const fetchedBattles = await contract.getAllBattles();
+
+      const pendingBattles = fetchedBattles.filter((battle) => 
+      battle.battleStatus === 0) ; 
+
+      let activeBattle = null ; 
+
+      fetchedBattles.forEach((battle) => {
+        if (battle.players.find((player) => player.toLowerCase() === walletAddress.toLowerCase())) {
+          if (battle.winner.startsWith('0x00')) {
+            activeBattle = battle;
+          }
+        }
+      });
+
+      setGameData({ pendingBattles: pendingBattles.slice(1), activeBattle });
+    };
+    if (contract) {
+      fetchGameData();
+    }
+  }, [contract,updategameData]);
 
   //* Set the wallet address to the state
   const updateCurrentWalletAddress = async () => {
@@ -92,7 +115,9 @@ export const GlobalContextProvider = ({ children }) => {
         walletAddress,
         showAlert,
         setShowAlert,
-        battleName, setBattleName
+        battleName,
+        setBattleName,
+        gameData, updategameData, setUpdategameData
       }}
     >
       {children}
